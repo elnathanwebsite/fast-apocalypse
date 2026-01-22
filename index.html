@@ -25,33 +25,85 @@
             padding: 20px;
         }
         
+        /* ========================================= */
+        /* STYLE HEADER DENGAN VIDEO BACKGROUND */
+        /* ========================================= */
         header {
+            position: relative; /* Penting untuk positioning video */
             text-align: center;
-            padding: 40px 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 15px;
+            padding: 60px 20px;
             margin-bottom: 30px;
             border: 2px solid #00ffff;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            position: relative;
+            border-radius: 15px;
+            overflow: hidden; /* Memotong video agar sesuai sudut rounded */
             display: flex;
             flex-direction: column;
-            align-items: center; /* Memastikan konten di tengah */
+            align-items: center;
+            justify-content: center;
+            min-height: 400px; /* Tinggi banner diperbesar agar video terlihat jelas */
+        }
+
+        /* Container Video Background */
+        .header-video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Di paling belakang */
+        }
+
+        .header-video-bg video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Video memenuhi area tanpa gepeng */
+        }
+
+        /* Overlay Gelap agar teks terbaca */
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Gelap 60% */
+            z-index: 1;
+        }
+
+        /* Konten Header (Teks & Tombol) */
+        .header-content {
+            position: relative;
+            z-index: 2; /* Di paling depan */
+            width: 100%;
         }
         
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #00ffff;
             text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
             margin-bottom: 10px;
+            letter-spacing: 2px;
         }
         
         .subtitle {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             color: #ffd700;
             margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-weight: bold;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            text-shadow: 1px 1px 2px black;
         }
         
+        /* ========================================= */
+        /* STYLE NAVIGASI & CONTENT */
+        /* ========================================= */
         .nav-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -356,32 +408,30 @@
         /* ========================================= */
         
         #start-game-btn {
-            /* Hapus absolute positioning */
             position: relative;
             display: none; /* Default hidden, JS will show if PC */
             
-            margin-top: 30px; /* Jarak dari text di atasnya */
+            margin-top: 40px; /* Jarak dari text */
             background: linear-gradient(45deg, #00ff00, #00aa00);
             color: white;
             
             /* UKURAN LEBIH BESAR */
             padding: 20px 60px;
-            font-size: 2rem; /* Ukuran font besar */
+            font-size: 2rem;
             
             border: 4px solid #fff;
             border-radius: 100px;
-            font-weight: 900; /* Lebih tebal */
+            font-weight: 900;
             cursor: pointer;
             box-shadow: 0 0 25px #00ff00;
             animation: pulse 1.5s infinite;
-            z-index: 100;
             text-transform: uppercase;
             letter-spacing: 2px;
             transition: all 0.3s;
         }
 
         #start-game-btn:hover {
-            transform: scale(1.1); /* Efek zoom saat hover */
+            transform: scale(1.1);
             background: linear-gradient(45deg, #00aa00, #00ff00);
             box-shadow: 0 0 40px #00ff00;
         }
@@ -390,52 +440,6 @@
             0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
             70% { box-shadow: 0 0 0 20px rgba(0, 255, 0, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
-        }
-
-        /* ========================================= */
-        /* STYLE UNTUK VIDEO MODAL PLAYER */
-        /* ========================================= */
-        #video-modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 9999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #video-container {
-            width: 90%;
-            max-width: 1200px;
-            position: relative;
-        }
-
-        #game-video {
-            width: 100%;
-            border: 2px solid #00ffff;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2);
-        }
-
-        #close-video-btn {
-            margin-top: 20px;
-            padding: 10px 30px;
-            background: #ff5555;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        #close-video-btn:hover {
-            background: #ff0000;
         }
 
         /* Overlay Pemblokir Mobile */
@@ -486,23 +490,24 @@
         <p style="margin-top: 15px; color: #888; font-size: 1rem;">Resolusi layar atau perangkat Anda tidak mendukung.</p>
     </div>
 
-    <div id="video-modal">
-        <div id="video-container">
-            <video id="game-video" controls>
-                <source src="nama_file_video_anda.mp4" type="video/mp4">
-                Browser Anda tidak mendukung tag video.
-            </video>
-        </div>
-        <button id="close-video-btn" onclick="closeGameVideo()">❌ TUTUP VIDEO</button>
-    </div>
-
     <div class="container">
         <header>
-            <h1>MUSEUM ASET GAME</h1>
-            <p class="subtitle">SURVIVAL: CAMERA AGGRUPDATE</p>
-            <p>Koleksi lengkap semua asset game: GIF, PNG, JPG, dan file audio dengan preview dan informasi detail</p>
-            
-            <button id="start-game-btn" onclick="playGameVideo()">▶ PUTAR VIDEO</button>
+            <div class="header-video-bg">
+                <video autoplay muted loop playsinline>
+                    <source src="nama_file_video_anda.mp4" type="video/mp4">
+                    Browser Anda tidak mendukung tag video.
+                </video>
+            </div>
+
+            <div class="header-overlay"></div>
+
+            <div class="header-content">
+                <h1>MUSEUM ASET GAME</h1>
+                <p class="subtitle">SURVIVAL: CAMERA AGGRUPDATE</p>
+                <p class="description">Koleksi lengkap semua asset game: GIF, PNG, JPG, dan file audio dengan preview dan informasi detail</p>
+                
+                <button id="start-game-btn" onclick="goToGame()">🎮 START GAME</button>
+            </div>
         </header>
         
         <div class="nav-tabs">
@@ -629,7 +634,7 @@
 
     <script>
         // ============================================
-        // LOGIKA DETEKSI PERANGKAT & PEMUTAR VIDEO
+        // LOGIKA DETEKSI PERANGKAT 
         // ============================================
         
         function checkDeviceAndBlock() {
@@ -656,29 +661,9 @@
             }
         }
 
-        // FUNGSI UNTUK MEMBUKA MODAL DAN MEMUTAR VIDEO
-        function playGameVideo() {
-            const modal = document.getElementById('video-modal');
-            const video = document.getElementById('game-video');
-            
-            // Tampilkan modal
-            modal.style.display = 'flex';
-            
-            // Putar video
-            video.play();
-        }
-
-        // FUNGSI UNTUK MENUTUP MODAL DAN STOP VIDEO
-        function closeGameVideo() {
-            const modal = document.getElementById('video-modal');
-            const video = document.getElementById('game-video');
-            
-            // Stop video
-            video.pause();
-            video.currentTime = 0;
-            
-            // Sembunyikan modal
-            modal.style.display = 'none';
+        // FUNGSI MENUJU GAME
+        function goToGame() {
+            window.location.href = "geme35.html";
         }
 
         // Jalankan pengecekan saat halaman dimuat
