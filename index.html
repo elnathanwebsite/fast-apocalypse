@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Museum Aset Game: Survival - Camera Aggro Update</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* RESET & BASIC STYLE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,6 +22,7 @@
             padding: 20px;
         }
         
+        /* HEADER STYLE */
         header {
             text-align: center;
             padding: 40px 20px;
@@ -33,7 +31,9 @@
             margin-bottom: 30px;
             border: 2px solid #00ffff;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-            position: relative; /* Untuk positioning tombol start */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         h1 {
@@ -48,7 +48,44 @@
             color: #ffd700;
             margin-bottom: 20px;
         }
+
+        /* TOMBOL BESAR DI TENGAH (AUTO PLAY TRIGGER) */
+        #start-game-btn {
+            position: relative;
+            display: none; /* Default hidden, JS will show if PC */
+            margin-top: 20px;
+            
+            /* Desain Tombol Besar */
+            background: linear-gradient(45deg, #00ff00, #00aa00);
+            color: white;
+            padding: 20px 60px;
+            font-size: 2rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            
+            border: 4px solid #fff;
+            border-radius: 100px;
+            cursor: pointer;
+            box-shadow: 0 0 25px #00ff00;
+            animation: pulse 1.5s infinite;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        #start-game-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #00aa00, #00ff00);
+            box-shadow: 0 0 50px #00ff00;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 25px rgba(0, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        }
         
+        /* NAV & GRID STYLE */
         .nav-tabs {
             display: flex;
             flex-wrap: wrap;
@@ -77,23 +114,10 @@
             box-shadow: 0 0 10px #00ffff;
         }
         
-        .tab-btn:hover:not(.active) {
-            background: #555;
-        }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
         
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .section-title {
             font-size: 2rem;
@@ -115,14 +139,11 @@
             border-radius: 10px;
             overflow: hidden;
             border: 1px solid #555;
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.3s;
             position: relative;
         }
         
-        .asset-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
-        }
+        .asset-card:hover { transform: translateY(-5px); }
         
         .asset-preview {
             width: 100%;
@@ -134,310 +155,130 @@
             overflow: hidden;
             position: relative;
         }
+
+        .gif-img { max-width: 100%; max-height: 100%; object-fit: contain; }
         
-        .gif-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-        
-        .gif-img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .gif-controls {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            display: flex;
-            gap: 5px;
-        }
-        
-        .control-btn {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            border: 1px solid #555;
-            border-radius: 3px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        
-        .control-btn:hover {
-            background: rgba(0, 100, 200, 0.7);
-        }
-        
-        .asset-info {
-            padding: 20px;
-        }
-        
-        .asset-name {
-            font-size: 1.4rem;
-            color: #00ffff;
-            margin-bottom: 10px;
-            word-break: break-all;
-        }
+        .asset-info { padding: 20px; }
+        .asset-name { font-size: 1.4rem; color: #00ffff; margin-bottom: 10px; }
         
         .asset-type {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
+            display: inline-block; padding: 3px 8px; border-radius: 3px;
+            font-size: 0.8rem; margin-bottom: 10px;
         }
-        
         .type-gif { background: #006600; }
         .type-png { background: #000066; }
         .type-jpg { background: #660000; }
         .type-mp3 { background: #663300; }
         
-        .asset-desc {
-            color: #ccc;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
+        .asset-desc { color: #ccc; font-size: 0.9rem; margin-bottom: 15px; }
         
-        .asset-meta {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 10px;
-            font-size: 0.8rem;
-        }
-        
-        .meta-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 5px 8px;
-            border-radius: 3px;
-        }
-        
-        .search-box {
-            margin: 20px 0;
-            display: flex;
-            gap: 10px;
-        }
-        
+        .search-box { margin: 20px 0; display: flex; gap: 10px; }
         .search-input {
-            flex: 1;
-            padding: 10px 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid #555;
-            border-radius: 5px;
-            color: white;
-            font-size: 1rem;
+            flex: 1; padding: 10px 15px; background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #555; border-radius: 5px; color: white; font-size: 1rem;
         }
-        
         .search-btn {
-            padding: 10px 20px;
-            background: #00ffff;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        
-        .filter-section {
-            margin: 20px 0;
-            background: rgba(20, 20, 30, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-        }
-        
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .filter-label {
-            color: #ffd700;
-            font-weight: bold;
-        }
-        
-        .filter-btn {
-            padding: 8px 15px;
-            background: #333;
-            color: #fff;
-            border: 1px solid #555;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .filter-btn.active {
-            background: #ffd700;
-            color: #000;
-            border-color: #ffd700;
-        }
-        
-        .total-assets {
-            text-align: center;
-            margin: 20px 0;
-            color: #ccc;
-            font-size: 1.1rem;
-        }
-        
-        .asset-count {
-            color: #00ffff;
-            font-weight: bold;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 30px;
-            margin-top: 50px;
-            border-top: 1px solid #444;
-            color: #aaa;
-            font-size: 0.9rem;
-        }
-        
-        .highlight {
-            color: #ffd700;
-            font-weight: bold;
-        }
-        
-        .no-results {
-            text-align: center;
-            padding: 50px;
-            color: #888;
-            font-size: 1.2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .nav-tabs {
-                flex-direction: column;
-            }
-        }
-        
-        /* GIF Animation Status */
-        .gif-status {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.7rem;
-        }
-        
-        .gif-playing .gif-status {
-            background: rgba(0, 100, 0, 0.7);
-        }
-        
-        .gif-paused .gif-status {
-            background: rgba(100, 0, 0, 0.7);
-        }
-        
-        .asset-usage {
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 5px;
-            font-size: 0.85rem;
+            padding: 10px 20px; background: #00ffff; color: #000;
+            border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
         }
 
-        /* ========================================= */
-        /* STYLE KHUSUS START BUTTON & DEVICE CHECK */
-        /* ========================================= */
-        
-        #start-game-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(45deg, #00ff00, #00aa00);
-            color: white;
-            padding: 15px 30px;
-            border: 2px solid #fff;
-            border-radius: 50px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 0 15px #00ff00;
-            animation: pulse 2s infinite;
-            z-index: 100;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: none; /* Default hidden, JS will show if PC */
-        }
-
-        #start-game-btn:hover {
-            transform: scale(1.05);
-            background: linear-gradient(45deg, #00aa00, #00ff00);
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 255, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
-        }
-
-        /* Overlay Pemblokir Mobile */
-        #mobile-blocker {
-            display: none; /* Default hidden */
+        /* VIDEO MODAL (POP-UP) */
+        #video-modal {
+            display: none; /* Hidden by default */
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.95);
             z-index: 9999;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            padding: 20px;
+            animation: zoomIn 0.3s;
+        }
+        
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
-        #mobile-blocker h2 {
-            color: #ff5555;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            border: 3px solid #ff5555;
-            padding: 10px 20px;
+        #video-container {
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        #game-video {
+            width: 100%;
+            border: 2px solid #00ffff;
             border-radius: 10px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.4);
+            background: #000;
         }
 
-        #mobile-blocker p {
-            font-size: 1.2rem;
+        #close-video-btn {
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: #ff5555;
             color: white;
-            max-width: 600px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
         }
+        
+        #close-video-btn:hover { background: #ff0000; transform: scale(1.05); }
 
-        #mobile-blocker .icon {
-            font-size: 5rem;
-            margin-bottom: 20px;
+        /* MOBILE BLOCKER */
+        #mobile-blocker {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 99999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
         }
-
+        
+        .icon-block { font-size: 4rem; margin-bottom: 20px; }
+        .text-block { border: 2px solid #ff5555; padding: 20px; border-radius: 10px; }
+        
+        footer {
+            text-align: center; padding: 30px; margin-top: 50px;
+            border-top: 1px solid #444; color: #aaa;
+        }
     </style>
 </head>
 <body>
 
     <div id="mobile-blocker">
-        <div class="icon">🚫📱</div>
-        <h2>AKSES DITOLAK</h2>
-        <p>Maaf, <strong>Museum Aset Game</strong> dan gameplay hanya dapat diakses menggunakan <strong>PC / Laptop / Desktop</strong>.</p>
-        <p style="margin-top: 15px; color: #888; font-size: 1rem;">Resolusi layar atau perangkat Anda tidak mendukung.</p>
+        <div class="icon-block">🚫📱</div>
+        <div class="text-block">
+            <h2 style="color: #ff5555; margin-bottom: 10px;">AKSES DITOLAK</h2>
+            <p>Aplikasi ini hanya dapat dijalankan di <strong>PC / Laptop</strong>.</p>
+        </div>
+    </div>
+
+    <div id="video-modal">
+        <div id="video-container">
+            <video id="game-video" controls autoplay>
+                <source src="nama_file_video_anda.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+            </video>
+        </div>
+        <button id="close-video-btn" onclick="closeGameVideo()">❌ TUTUP VIDEO</button>
     </div>
 
     <div class="container">
         <header>
-            <button id="start-game-btn" onclick="launchGame()">🎮 START GAME (PC)</button>
-
             <h1>MUSEUM ASET GAME</h1>
             <p class="subtitle">SURVIVAL: CAMERA AGGRUPDATE</p>
-            <p>Koleksi lengkap semua asset game: GIF, PNG, JPG, dan file audio dengan preview dan informasi detail</p>
+            <p>Koleksi lengkap semua asset game: GIF, PNG, JPG, dan file audio</p>
+            
+            <button id="start-game-btn" onclick="playGameVideo()">▶ PUTAR VIDEO</button>
         </header>
         
         <div class="nav-tabs">
@@ -445,965 +286,155 @@
             <button class="tab-btn" data-tab="gif">GIF Animasi</button>
             <button class="tab-btn" data-tab="images">Gambar Statis</button>
             <button class="tab-btn" data-tab="audio">Audio & SFX</button>
-            <button class="tab-btn" data-tab="characters">Karakter</button>
-            <button class="tab-btn" data-tab="enemies">Musuh</button>
-            <button class="tab-btn" data-tab="items">Item & Resource</button>
-            <button class="tab-btn" data-tab="structures">Struktur</button>
         </div>
         
         <div class="search-box">
-            <input type="text" class="search-input" placeholder="Cari asset berdasarkan nama atau tipe...">
+            <input type="text" class="search-input" placeholder="Cari asset...">
             <button class="search-btn">Cari</button>
-        </div>
-        
-        <div class="filter-section">
-            <div class="filter-group">
-                <span class="filter-label">Filter Tipe File:</span>
-                <button class="filter-btn active" data-filter="all">Semua</button>
-                <button class="filter-btn" data-filter="gif">.gif</button>
-                <button class="filter-btn" data-filter="png">.png</button>
-                <button class="filter-btn" data-filter="jpg">.jpg/.jpeg</button>
-                <button class="filter-btn" data-filter="mp3">.mp3</button>
-            </div>
-        </div>
-        
-        <div class="total-assets">
-            Total Aset: <span class="asset-count" id="asset-count">0</span> file
         </div>
         
         <div id="all" class="tab-content active">
             <h2 class="section-title">📁 SEMUA ASET GAME</h2>
-            <div class="grid" id="all-assets">
-                </div>
+            <div class="grid" id="all-assets"></div>
         </div>
         
-        <div id="gif" class="tab-content">
-            <h2 class="section-title">🎬 GIF ANIMASI</h2>
-            <p>File GIF animasi untuk karakter, musuh, dan efek special</p>
-            <div class="grid" id="gif-assets">
-                </div>
-        </div>
-        
-        <div id="images" class="tab-content">
-            <h2 class="section-title">🖼️ GAMBAR STATIS</h2>
-            <p>File PNG dan JPG untuk item, UI, background, dan texture</p>
-            <div class="grid" id="image-assets">
-                </div>
-        </div>
-        
-        <div id="audio" class="tab-content">
-            <h2 class="section-title">🔊 AUDIO & SFX</h2>
-            <p>File audio untuk background music dan sound effects</p>
-            <div class="grid" id="audio-assets">
-                </div>
-        </div>
-        
-        <div id="characters" class="tab-content">
-            <h2 class="section-title">👤 KARAKTER UTAMA</h2>
-            <p>Asset untuk karakter pemain dan sekutu</p>
-            <div class="grid" id="character-assets">
-                </div>
-        </div>
-        
-        <div id="enemies" class="tab-content">
-            <h2 class="section-title">👾 MUSUH & BOSS</h2>
-            <p>Asset untuk semua jenis musuh dan bos</p>
-            <div class="grid" id="enemy-assets">
-                </div>
-        </div>
-        
-        <div id="items" class="tab-content">
-            <h2 class="section-title">🎒 ITEM & RESOURCE</h2>
-            <p>Asset untuk item, resource, dan koleksi</p>
-            <div class="grid" id="item-assets">
-                </div>
-        </div>
-        
-        <div id="structures" class="tab-content">
-            <h2 class="section-title">🏗️ STRUKTUR & BANGUNAN</h2>
-            <p>Asset untuk bangunan, benteng, dan lingkungan</p>
-            <div class="grid" id="structure-assets">
-                </div>
-        </div>
-        
+        <div id="gif" class="tab-content"><div class="grid" id="gif-assets"></div></div>
+        <div id="images" class="tab-content"><div class="grid" id="image-assets"></div></div>
+        <div id="audio" class="tab-content"><div class="grid" id="audio-assets"></div></div>
+
         <footer>
-            <p>Museum Aset Game "Survival: Camera Aggro Update"</p>
-            <p>Total <span id="total-files">0</span> file asset game | Terakhir diperbarui: <span id="current-date"></span></p>
-            <p style="margin-top: 20px; color: #ff5555;">⚠️ Semua asset adalah hak cipta dari pengembang game</p>
+            <p>Total Aset: <span id="asset-count">0</span> | PC Version Only</p>
         </footer>
     </div>
 
     <template id="asset-template">
-        <div class="asset-card" data-type="" data-category="">
+        <div class="asset-card" data-type="" data-name="">
             <div class="asset-preview">
-                <div class="gif-container">
-                    <img class="gif-img" src="" alt="Asset Preview">
-                    <div class="gif-status">GIF</div>
-                </div>
-                <div class="gif-controls">
-                    <button class="control-btn play-btn">▶ Putar</button>
-                    <button class="control-btn pause-btn">⏸ Jeda</button>
-                    <button class="control-btn restart-btn">↻ Ulang</button>
-                </div>
+                <img class="gif-img" src="" alt="Preview">
             </div>
             <div class="asset-info">
-                <h3 class="asset-name">Nama File</h3>
-                <span class="asset-type type-gif">GIF</span>
-                <p class="asset-desc">Deskripsi asset akan ditampilkan di sini.</p>
-                <div class="asset-meta">
-                    <div class="meta-item">Path: <span class="file-path">/path/to/file</span></div>
-                    <div class="meta-item">Ukuran: <span class="file-size">-</span></div>
-                    <div class="meta-item">Dimensi: <span class="file-dimensions">-</span></div>
-                </div>
-                <div class="asset-usage">
-                    <strong>Penggunaan dalam game:</strong> <span class="usage-desc">-</span>
-                </div>
+                <h3 class="asset-name">Nama</h3>
+                <span class="asset-type">Tipe</span>
+                <p class="asset-desc">Deskripsi</p>
             </div>
         </div>
     </template>
 
     <script>
-        // ============================================
-        // LOGIKA DETEKSI PERANGKAT (PC vs MOBILE)
-        // ============================================
-        function checkDeviceAndBlock() {
-            // Regex untuk mendeteksi mobile user agents
-            const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        // ==========================================
+        // 1. LOGIKA AUTO PLAY VIDEO & MODAL
+        // ==========================================
+        function playGameVideo() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('game-video');
             
-            // Cek lebar layar (biasanya mobile < 768px, tablet < 1024px)
-            const isSmallScreen = window.innerWidth < 1024;
+            // Tampilkan Modal
+            modal.style.display = 'flex';
             
+            // PAKSA VIDEO PUTAR (Auto Play)
+            // Karena user baru saja mengklik tombol, browser mengizinkan suara.
+            video.currentTime = 0; // Reset ke awal
+            var playPromise = video.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Video playing automatically.");
+                }).catch(error => {
+                    console.log("Auto-play prevented by browser. User needs to click play.");
+                });
+            }
+        }
+
+        function closeGameVideo() {
+            const modal = document.getElementById('video-modal');
+            const video = document.getElementById('game-video');
+            
+            video.pause(); // Stop video
+            modal.style.display = 'none'; // Sembunyikan modal
+        }
+
+        // ==========================================
+        // 2. LOGIKA DETEKSI PC VS MOBILE
+        // ==========================================
+        function checkDevice() {
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 1024;
             const startBtn = document.getElementById('start-game-btn');
             const blocker = document.getElementById('mobile-blocker');
             const container = document.querySelector('.container');
 
-            if (isMobileUA || isSmallScreen) {
-                // JIKA BUKAN PC:
-                // 1. Tampilkan layar pemblokir
+            if (isMobile) {
                 blocker.style.display = 'flex';
-                // 2. Sembunyikan konten utama (opsional)
                 container.style.filter = 'blur(10px)';
-                document.body.style.overflow = 'hidden'; // Matikan scroll
-                // 3. Sembunyikan tombol start
+                document.body.style.overflow = 'hidden';
                 if(startBtn) startBtn.style.display = 'none';
-                
-                console.log("Akses Ditolak: Perangkat Mobile terdeteksi.");
             } else {
-                // JIKA PC:
-                // 1. Tampilkan tombol Start Game
-                if(startBtn) startBtn.style.display = 'block';
-                // 2. Sembunyikan blocker
                 blocker.style.display = 'none';
-                
-                console.log("Akses Diterima: PC terdeteksi.");
+                if(startBtn) startBtn.style.display = 'inline-block';
             }
         }
-
-        // Fungsi untuk tombol start (LINK KE GEME35.HTML)
-        function launchGame() {
-            window.location.href = "geme35.html";
-        }
-
-        // Jalankan pengecekan saat halaman dimuat
-        checkDeviceAndBlock();
         
-        // Cek lagi jika window di-resize (antisipasi inspect element responsive mode)
-        window.addEventListener('resize', checkDeviceAndBlock);
+        window.addEventListener('load', checkDevice);
+        window.addEventListener('resize', checkDevice);
 
-
-        // ============================================
-        // SCRIPT ASET GAME ORIGINAL (TIDAK DIUBAH)
-        // ============================================
-        
-        // Data semua asset game dari kode sumber
+        // ==========================================
+        // 3. LOAD DATA ASET (Simulasi Data)
+        // ==========================================
         const gameAssets = [
-            // ========== GIF ANIMASI ==========
-            {
-                id: 1,
-                name: "zombie.gif",
-                path: "assets/zombie.gif",
-                type: "gif",
-                category: "enemy",
-                description: "Zombie normal dengan animasi berjalan dan menyerang",
-                usage: "Musuh dasar dengan 2 tipe perilaku: chase (langsung mengejar) dan guard_wait (diam sampai diprovokasi)",
-                dimensions: "120x120px",
-                size: "~150KB",
-                tags: ["musuh", "zombie", "normal", "animasi"]
-            },
-            {
-                id: 2,
-                name: "zombiebom.gif",
-                path: "assets/zombiebom.gif",
-                type: "gif",
-                category: "enemy",
-                description: "Zombie bomber yang akan meledak saat mendekati player",
-                usage: "Musuh khusus yang menyebabkan instant death saat meledak",
-                dimensions: "120x120px",
-                size: "~160KB",
-                tags: ["musuh", "zombie", "bomber", "ledakan", "animasi"]
-            },
-            {
-                id: 3,
-                name: "zombiebaik.gif",
-                path: "assets/zombiebaik.gif",
-                type: "gif",
-                category: "character",
-                description: "Zombie baik (CP. Nathan) yang membantu player",
-                usage: "Sekutu yang muncul dari area radiasi, membantu melawan zombie jahat",
-                dimensions: "120x120px",
-                size: "~140KB",
-                tags: ["sekutu", "zombie baik", "partner", "animasi"]
-            },
-            {
-                id: 4,
-                name: "hunter.gif",
-                path: "assets/hunter.gif",
-                type: "gif",
-                category: "character",
-                description: "Karakter utama (Hunter) dengan animasi berjalan dan menembak",
-                usage: "Karakter pemain yang dikendalikan user",
-                dimensions: "130x130px",
-                size: "~180KB",
-                tags: ["karakter", "pemain", "hunter", "animasi"]
-            },
-            {
-                id: 5,
-                name: "partner.gif",
-                path: "assets/partner.gif",
-                type: "gif",
-                category: "character",
-                description: "Partner NPC yang bisa diselamatkan",
-                usage: "CP. Nathan dalam keadaan terjebak, bisa diselamatkan dengan tahan SOS 3 detik",
-                dimensions: "130x130px",
-                size: "~170KB",
-                tags: ["karakter", "partner", "npc", "animasi"]
-            },
-            {
-                id: 6,
-                name: "musuhberat1.gif",
-                path: "assets/musuhberat1.gif",
-                type: "gif",
-                category: "enemy",
-                description: "BOSS Tier 1 - Musuh berat level pertama",
-                usage: "Bos dengan HP tinggi, damage 5, speed 1.2",
-                dimensions: "180x180px",
-                size: "~200KB",
-                tags: ["musuh", "boss", "tier1", "animasi"]
-            },
-            {
-                id: 7,
-                name: "musuhberat2.gif",
-                path: "assets/musuhberat2.gif",
-                type: "gif",
-                category: "enemy",
-                description: "BOSS Tier 2 - Musuh berat level kedua",
-                usage: "Bos dengan kemampuan tembak peluru hijau",
-                dimensions: "180x180px",
-                size: "~210KB",
-                tags: ["musuh", "boss", "tier2", "animasi"]
-            },
-            {
-                id: 8,
-                name: "musuhberat3.gif",
-                path: "assets/musuhberat3.gif",
-                type: "gif",
-                category: "enemy",
-                description: "BOSS Tier 3 - Musuh berat level ketiga",
-                usage: "Bos dengan kemampuan tembak peluru homing ungu",
-                dimensions: "180x180px",
-                size: "~220KB",
-                tags: ["musuh", "boss", "tier3", "animasi"]
-            },
-            {
-                id: 9,
-                name: "mypet.gif",
-                path: "assets/mypet.gif",
-                type: "gif",
-                category: "character",
-                description: "Battle Pet yang bisa direkrut atau dibeli",
-                usage: "Pet yang mengikuti player, bisa menyerap damage",
-                dimensions: "50x50px",
-                size: "~80KB",
-                tags: ["karakter", "pet", "hewan", "animasi"]
-            },
-            {
-                id: 10,
-                name: "pintustage.gif",
-                path: "assets/pintustage.gif",
-                type: "gif",
-                category: "structure",
-                description: "Pintu untuk pindah ke stage berikutnya",
-                usage: "Exit door yang perlu dibuka dengan kunci sesuai level",
-                dimensions: "120x120px",
-                size: "~100KB",
-                tags: ["struktur", "pintu", "exit", "animasi"]
-            },
-            {
-                id: 11,
-                name: "teleportasi.gif",
-                path: "assets/teleportasi.gif",
-                type: "gif",
-                category: "structure",
-                description: "Teleporter untuk berpindah cepat di map",
-                usage: "4 teleporter di map untuk transportasi cepat",
-                dimensions: "100x100px",
-                size: "~90KB",
-                tags: ["struktur", "teleporter", "transportasi", "animasi"]
-            },
-            {
-                id: 12,
-                name: "bom.gif",
-                path: "assets/bom.gif",
-                type: "gif",
-                category: "item",
-                description: "Bom yang dilempar atau dari ledakan zombie bomber",
-                usage: "Senjata area dengan radius 200px, damage 100 (200 ke bos)",
-                dimensions: "100x100px",
-                size: "~110KB",
-                tags: ["item", "bom", "senjata", "animasi"]
-            },
-            {
-                id: 13,
-                name: "radiasi.gif",
-                path: "assets/radiasi.gif",
-                type: "gif",
-                category: "effect",
-                description: "Efek radiasi setelah ledakan bom",
-                usage: "Area radiasi yang merusak player dan memunculkan zombie baik",
-                dimensions: "200x200px",
-                size: "~130KB",
-                tags: ["efek", "radiasi", "lingkungan", "animasi"]
-            },
-            
-            // ========== GAMBAR STATIS (PNG/JPG) ==========
-            {
-                id: 14,
-                name: "shop.jpg",
-                path: "assets/shop.jpg",
-                type: "jpg",
-                category: "structure",
-                description: "Gambar merchant/shop tempat beli item",
-                usage: "3 merchant di map yang jual item dengan koin",
-                dimensions: "150x150px",
-                size: "~50KB",
-                tags: ["struktur", "shop", "merchant", "jpg"]
-            },
-            {
-                id: 15,
-                name: "bentengkayu.png",
-                path: "assets/bentengkayu.png",
-                type: "png",
-                category: "structure",
-                description: "Texture benteng kayu",
-                usage: "Visual untuk benteng kayu di game",
-                dimensions: "200x200px",
-                size: "~40KB",
-                tags: ["struktur", "benteng", "kayu", "png"]
-            },
-            {
-                id: 16,
-                name: "bentengbesi.png",
-                path: "assets/bentengbesi.png",
-                type: "png",
-                category: "structure",
-                description: "Texture benteng besi",
-                usage: "Visual untuk benteng besi di game",
-                dimensions: "200x200px",
-                size: "~45KB",
-                tags: ["struktur", "benteng", "besi", "png"]
-            },
-            {
-                id: 17,
-                name: "peluru.png",
-                path: "assets/peluru.png",
-                type: "png",
-                category: "item",
-                description: "Icon amunisi/peluru",
-                usage: "Item amunisi untuk senjata player",
-                dimensions: "70x70px",
-                size: "~20KB",
-                tags: ["item", "ammo", "peluru", "png"]
-            },
-            {
-                id: 18,
-                name: "kayu.jpg",
-                path: "assets/kayu.jpg",
-                type: "jpg",
-                category: "item",
-                description: "Icon resource kayu",
-                usage: "Resource untuk bangun benteng dan upgrade senjata",
-                dimensions: "70x70px",
-                size: "~25KB",
-                tags: ["item", "resource", "kayu", "jpg"]
-            },
-            {
-                id: 19,
-                name: "besi.png",
-                path: "assets/besi.png",
-                type: "png",
-                category: "item",
-                description: "Icon resource besi",
-                usage: "Resource untuk bangun benteng besi dan upgrade senjata",
-                dimensions: "70x70px",
-                size: "~22KB",
-                tags: ["item", "resource", "besi", "png"]
-            },
-            {
-                id: 20,
-                name: "tali.png",
-                path: "assets/tali.png",
-                type: "png",
-                category: "item",
-                description: "Icon resource tali",
-                usage: "Resource untuk bangun benteng kayu",
-                dimensions: "70x70px",
-                size: "~18KB",
-                tags: ["item", "resource", "tali", "png"]
-            },
-            {
-                id: 21,
-                name: "makanan.png",
-                path: "assets/makanan.png",
-                type: "png",
-                category: "item",
-                description: "Icon makanan untuk heal",
-                usage: "Consumable untuk heal +30 HP",
-                dimensions: "70x70px",
-                size: "~23KB",
-                tags: ["item", "consumable", "makanan", "png"]
-            },
-            {
-                id: 22,
-                name: "tameng.png",
-                path: "assets/tameng.png",
-                type: "png",
-                category: "item",
-                description: "Icon shield/tameng",
-                usage: "Item shield untuk proteksi tambahan",
-                dimensions: "70x70px",
-                size: "~21KB",
-                tags: ["item", "shield", "tameng", "png"]
-            },
-            {
-                id: 23,
-                name: "energy.png",
-                path: "assets/energy.png",
-                type: "png",
-                category: "item",
-                description: "Icon energy/instant fort",
-                usage: "Item instant fort untuk bangun benteng langsung",
-                dimensions: "70x70px",
-                size: "~24KB",
-                tags: ["item", "energy", "instant", "png"]
-            },
-            {
-                id: 24,
-                name: "koin.png",
-                path: "assets/koin.png",
-                type: "png",
-                category: "item",
-                description: "Icon mata uang koin",
-                usage: "Mata uang untuk beli item di merchant",
-                dimensions: "70x70px",
-                size: "~19KB",
-                tags: ["item", "currency", "koin", "png"]
-            },
-            {
-                id: 25,
-                name: "kunci.png",
-                path: "assets/kunci.png",
-                type: "png",
-                category: "item",
-                description: "Icon kunci untuk buka pintu",
-                usage: "Dibutuhkan untuk buka pintu ke stage berikutnya",
-                dimensions: "70x70px",
-                size: "~20KB",
-                tags: ["item", "kunci", "key", "png"]
-            },
-            {
-                id: 26,
-                name: "bomloot.png",
-                path: "assets/bomloot.png",
-                type: "png",
-                category: "item",
-                description: "Icon bom sebagai loot",
-                usage: "Item bom yang bisa diambil dari map",
-                dimensions: "70x70px",
-                size: "~22KB",
-                tags: ["item", "bom", "loot", "png"]
-            },
-            {
-                id: 27,
-                name: "baground.png",
-                path: "assets/baground.png",
-                type: "png",
-                category: "background",
-                description: "Background pattern untuk game",
-                usage: "Pattern background yang di-repeat di seluruh map",
-                dimensions: "512x512px",
-                size: "~100KB",
-                tags: ["background", "texture", "pattern", "png"]
-            },
-            
-            // ========== AUDIO FILES ==========
-            {
-                id: 28,
-                name: "latarbelakang.mp3",
-                path: "sound/latarbelakang.mp3",
-                type: "mp3",
-                category: "audio",
-                description: "Background music game",
-                usage: "Musik loop selama permainan, volume 0.5",
-                duration: "Loop",
-                size: "~2MB",
-                tags: ["audio", "bgm", "music", "mp3"]
-            },
-            {
-                id: 29,
-                name: "tembak.mp3",
-                path: "sound/tembak.mp3",
-                type: "mp3",
-                category: "audio",
-                description: "Sound effect tembakan",
-                usage: "SFX saat player menembak, volume 0.4",
-                duration: "~0.5s",
-                size: "~50KB",
-                tags: ["audio", "sfx", "tembak", "mp3"]
-            },
-            {
-                id: 30,
-                name: "boom.mp3",
-                path: "sound/boom.mp3",
-                type: "mp3",
-                category: "audio",
-                description: "Sound effect ledakan",
-                usage: "SFX saat bom meledak, volume 0.6",
-                duration: "~1s",
-                size: "~80KB",
-                tags: ["audio", "sfx", "ledakan", "boom", "mp3"]
-            }
+            { name: "zombie.gif", type: "gif", desc: "Musuh dasar", path: "assets/zombie.gif" },
+            { name: "hunter.gif", type: "gif", desc: "Player Character", path: "assets/hunter.gif" },
+            { name: "bgm.mp3", type: "mp3", desc: "Background Music", path: "sound/bgm.mp3" },
+            { name: "wall.png", type: "png", desc: "Texture Tembok", path: "assets/wall.png" }
         ];
 
-        // Fungsi untuk memuat asset ke DOM
         function loadAssets() {
             const template = document.getElementById('asset-template');
-            const containers = {
-                'all': document.getElementById('all-assets'),
-                'gif': document.getElementById('gif-assets'),
-                'images': document.getElementById('image-assets'),
-                'audio': document.getElementById('audio-assets'),
-                'characters': document.getElementById('character-assets'),
-                'enemies': document.getElementById('enemy-assets'),
-                'items': document.getElementById('item-assets'),
-                'structures': document.getElementById('structure-assets')
-            };
+            const allContainer = document.getElementById('all-assets');
             
-            // Kosongkan semua container
-            Object.values(containers).forEach(container => {
-                if (container) container.innerHTML = '';
-            });
+            document.getElementById('asset-count').innerText = gameAssets.length;
             
-            // Hitung total asset
-            document.getElementById('asset-count').textContent = gameAssets.length;
-            document.getElementById('total-files').textContent = gameAssets.length;
-            
-            // Buat card untuk setiap asset
             gameAssets.forEach(asset => {
                 const clone = template.content.cloneNode(true);
                 const card = clone.querySelector('.asset-card');
-                const img = clone.querySelector('.gif-img');
-                const name = clone.querySelector('.asset-name');
-                const type = clone.querySelector('.asset-type');
-                const desc = clone.querySelector('.asset-desc');
-                const path = clone.querySelector('.file-path');
-                const size = clone.querySelector('.file-size');
-                const dimensions = clone.querySelector('.file-dimensions');
-                const usage = clone.querySelector('.usage-desc');
-                const status = clone.querySelector('.gif-status');
                 
-                // Set data attributes
-                card.dataset.type = asset.type;
-                card.dataset.category = asset.category;
-                card.dataset.tags = asset.tags.join(',');
-                card.dataset.name = asset.name.toLowerCase();
+                card.querySelector('.asset-name').textContent = asset.name;
+                card.querySelector('.asset-desc').textContent = asset.desc;
+                card.querySelector('.asset-type').textContent = asset.type.toUpperCase();
+                card.querySelector('.asset-type').className = `asset-type type-${asset.type}`;
                 
-                // Set konten
-                name.textContent = asset.name;
-                desc.textContent = asset.description;
-                path.textContent = asset.path;
-                size.textContent = asset.size || '-';
-                dimensions.textContent = asset.dimensions || '-';
-                usage.textContent = asset.usage;
-                
-                // Set tipe file
-                type.textContent = asset.type.toUpperCase();
-                type.className = `asset-type type-${asset.type}`;
-                
-                // Set status untuk GIF
-                if (asset.type === 'gif') {
-                    status.textContent = 'GIF';
-                    card.classList.add('gif-playing');
-                } else if (asset.type === 'mp3') {
-                    status.textContent = 'AUDIO';
-                    card.classList.add('gif-paused');
+                // Placeholder Image logic (simplified)
+                const img = card.querySelector('.gif-img');
+                if(asset.type === 'mp3') {
+                    img.src = "https://placehold.co/200x200/663300/FFF?text=AUDIO";
                 } else {
-                    status.textContent = asset.type.toUpperCase();
-                    card.classList.add('gif-paused');
-                }
-                
-                // Set image source atau placeholder
-                if (asset.type === 'gif' || asset.type === 'png' || asset.type === 'jpg') {
-                    // Coba load gambar asli, jika gagal gunakan placeholder
                     img.src = asset.path;
-                    img.onerror = function() {
-                        // Gunakan placeholder berdasarkan kategori
-                        const placeholderColors = {
-                            'character': '#0066cc',
-                            'enemy': '#cc0000',
-                            'item': '#00cc00',
-                            'structure': '#cc9900',
-                            'background': '#6600cc',
-                            'effect': '#cc00cc',
-                            'audio': '#996600'
-                        };
-                        
-                        const color = placeholderColors[asset.category] || '#333333';
-                        img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="${color}"/><text x="100" y="100" font-family="Arial" font-size="14" fill="white" text-anchor="middle" dominant-baseline="middle">${asset.name}</text></svg>`;
-                    };
-                } else if (asset.type === 'mp3') {
-                    // Untuk audio, tampilkan icon audio
-                    img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"><rect width="200" height="200" fill="#663300"/><text x="100" y="100" font-family="Arial" font-size="24" fill="white" text-anchor="middle" dominant-baseline="middle">🔊</text><text x="100" y="130" font-family="Arial" font-size="12" fill="white" text-anchor="middle">${asset.name}</text></svg>`;
+                    img.onerror = () => img.src = `https://placehold.co/200x200/111/FFF?text=${asset.type.toUpperCase()}`;
                 }
+
+                // Add to DOM
+                allContainer.appendChild(clone.cloneNode(true));
                 
-                // Tambahkan ke semua container yang sesuai
-                containers['all'].appendChild(card.cloneNode(true));
-                
-                // Tambahkan ke container berdasarkan kategori
-                if (asset.type === 'gif') {
-                    containers['gif'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.type === 'png' || asset.type === 'jpg') {
-                    containers['images'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.type === 'mp3') {
-                    containers['audio'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.category === 'character') {
-                    containers['characters'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.category === 'enemy') {
-                    containers['enemies'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.category === 'item') {
-                    containers['items'].appendChild(card.cloneNode(true));
-                }
-                
-                if (asset.category === 'structure' || asset.category === 'background' || asset.category === 'effect') {
-                    containers['structures'].appendChild(card.cloneNode(true));
-                }
+                // Add to specific tabs (Simplified logic)
+                const typeContainer = document.getElementById(asset.type === 'gif' ? 'gif-assets' : (asset.type === 'mp3' ? 'audio-assets' : 'image-assets'));
+                if(typeContainer) typeContainer.appendChild(clone.cloneNode(true));
             });
             
-            // Setup kontrol GIF setelah semua card dimuat
-            setupGifControls();
+            setupTabs();
         }
-        
-        // Fungsi untuk mengontrol GIF
-        function setupGifControls() {
-            document.querySelectorAll('.asset-card').forEach(card => {
-                const img = card.querySelector('.gif-img');
-                const playBtn = card.querySelector('.play-btn');
-                const pauseBtn = card.querySelector('.pause-btn');
-                const restartBtn = card.querySelector('.restart-btn');
-                const status = card.querySelector('.gif-status');
-                
-                if (!img || img.src.includes('data:image/svg+xml')) {
-                    // Jika gambar adalah placeholder, sembunyikan kontrol
-                    if (playBtn) playBtn.style.display = 'none';
-                    if (pauseBtn) pauseBtn.style.display = 'none';
-                    if (restartBtn) restartBtn.style.display = 'none';
-                    return;
-                }
-                
-                // Fungsi untuk memutar GIF
-                playBtn?.addEventListener('click', function() {
-                    if (img.src.includes('.gif')) {
-                        // Jika sudah GIF, restart animasi
-                        const src = img.src;
-                        img.src = '';
-                        setTimeout(() => {
-                            img.src = src;
-                            card.classList.remove('gif-paused');
-                            card.classList.add('gif-playing');
-                            status.textContent = 'GIF (Playing)';
-                        }, 10);
-                    }
-                });
-                
-                // Fungsi untuk menjeda GIF (hanya bekerja untuk GIF dengan teknik tertentu)
-                pauseBtn?.addEventListener('click', function() {
-                    // Untuk GIF, kita tidak bisa benar-benar pause tanpa teknik kompleks
-                    // Sebagai gantinya, kita ganti dengan frame pertama (jika tersedia)
-                    // Atau kita beri status paused
-                    card.classList.remove('gif-playing');
-                    card.classList.add('gif-paused');
-                    status.textContent = 'GIF (Paused)';
+
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     
-                    // Untuk demo, kita bisa coba teknik mengganti src ke data URL
-                    // Tapi karena keterbatasan, kita cukup ubah statusnya saja
-                });
-                
-                // Fungsi untuk restart GIF
-                restartBtn?.addEventListener('click', function() {
-                    const src = img.src;
-                    img.src = '';
-                    setTimeout(() => {
-                        img.src = src;
-                        card.classList.remove('gif-paused');
-                        card.classList.add('gif-playing');
-                        status.textContent = 'GIF (Playing)';
-                    }, 10);
+                    btn.classList.add('active');
+                    document.getElementById(btn.dataset.tab).classList.add('active');
                 });
             });
         }
-        
-        // Fungsi untuk filter dan pencarian
-        function setupFilterAndSearch() {
-            const searchInput = document.querySelector('.search-input');
-            const searchBtn = document.querySelector('.search-btn');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const tabBtns = document.querySelectorAll('.tab-btn');
-            
-            // Pencarian
-            function performSearch() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const activeTab = document.querySelector('.tab-btn.active').dataset.tab;
-                const container = document.getElementById(activeTab);
-                
-                if (!container) return;
-                
-                const cards = container.querySelectorAll('.asset-card');
-                let visibleCount = 0;
-                
-                cards.forEach(card => {
-                    const name = card.dataset.name;
-                    const tags = card.dataset.tags;
-                    const type = card.dataset.type;
-                    
-                    const matchesSearch = searchTerm === '' || 
-                        name.includes(searchTerm) || 
-                        tags.includes(searchTerm) ||
-                        type.includes(searchTerm);
-                    
-                    // Juga filter berdasarkan filter button aktif
-                    const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
-                    const matchesFilter = activeFilter === 'all' || type === activeFilter;
-                    
-                    if (matchesSearch && matchesFilter) {
-                        card.style.display = 'block';
-                        visibleCount++;
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                
-                // Update count
-                document.getElementById('asset-count').textContent = visibleCount;
-                
-                // Tampilkan pesan jika tidak ada hasil
-                if (visibleCount === 0 && searchTerm !== '') {
-                    const noResults = document.createElement('div');
-                    noResults.className = 'no-results';
-                    noResults.textContent = `Tidak ditemukan asset dengan kata kunci "${searchTerm}"`;
-                    
-                    // Hapus pesan sebelumnya jika ada
-                    const existingNoResults = container.querySelector('.no-results');
-                    if (existingNoResults) existingNoResults.remove();
-                    
-                    container.appendChild(noResults);
-                } else {
-                    const existingNoResults = container.querySelector('.no-results');
-                    if (existingNoResults) existingNoResults.remove();
-                }
-            }
-            
-            searchBtn.addEventListener('click', performSearch);
-            searchInput.addEventListener('keyup', function(e) {
-                if (e.key === 'Enter') performSearch();
-            });
-            
-            // Filter tipe file
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    filterBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    performSearch();
-                });
-            });
-            
-            // Tab navigation
-            tabBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Update tab aktif
-                    tabBtns.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Tampilkan konten tab yang sesuai
-                    const tabId = this.dataset.tab;
-                    document.querySelectorAll('.tab-content').forEach(content => {
-                        content.classList.remove('active');
-                    });
-                    document.getElementById(tabId).classList.add('active');
-                    
-                    // Reset pencarian dan lakukan search ulang
-                    searchInput.value = '';
-                    performSearch();
-                });
-            });
-        }
-        
-        // Fungsi untuk menampilkan tanggal terkini
-        function updateCurrentDate() {
-            const now = new Date();
-            const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            };
-            document.getElementById('current-date').textContent = now.toLocaleDateString('id-ID', options);
-        }
-        
-        // Inisialisasi saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', function() {
-            loadAssets();
-            setupFilterAndSearch();
-            updateCurrentDate();
-            
-            // Setup drag and drop untuk preview GIF (simulasi)
-            setupDragAndDrop();
-            
-            // Auto-play GIF saat hover (opsional)
-            setupHoverPlay();
-        });
-        
-        // Fungsi untuk drag and drop simulasi
-        function setupDragAndDrop() {
-            document.querySelectorAll('.gif-img').forEach(img => {
-                img.setAttribute('draggable', 'true');
-                
-                img.addEventListener('dragstart', function(e) {
-                    e.dataTransfer.setData('text/plain', this.src);
-                    this.style.opacity = '0.5';
-                });
-                
-                img.addEventListener('dragend', function() {
-                    this.style.opacity = '1';
-                });
-            });
-            
-            // Area drop untuk preview besar
-            const dropZone = document.createElement('div');
-            dropZone.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 80%;
-                height: 80%;
-                background: rgba(0,0,0,0.9);
-                border: 3px dashed #00ffff;
-                border-radius: 10px;
-                z-index: 1000;
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-            `;
-            
-            dropZone.innerHTML = `
-                <div style="font-size: 24px; color: #00ffff; margin-bottom: 20px;">PREVIEW BESAR</div>
-                <img id="large-preview" style="max-width: 90%; max-height: 70%;">
-                <button id="close-preview" style="margin-top: 20px; padding: 10px 20px; background: #ff5555; color: white; border: none; border-radius: 5px; cursor: pointer;">Tutup</button>
-            `;
-            
-            document.body.appendChild(dropZone);
-            
-            // Event untuk close preview
-            document.getElementById('close-preview').addEventListener('click', function() {
-                dropZone.style.display = 'none';
-            });
-            
-            // Event untuk drag over
-            document.addEventListener('dragover', function(e) {
-                e.preventDefault();
-            });
-            
-            // Event untuk drop
-            document.addEventListener('drop', function(e) {
-                e.preventDefault();
-                const imgSrc = e.dataTransfer.getData('text/plain');
-                if (imgSrc) {
-                    document.getElementById('large-preview').src = imgSrc;
-                    dropZone.style.display = 'flex';
-                }
-            });
-        }
-        
-        // Fungsi untuk auto-play GIF saat hover
-        function setupHoverPlay() {
-            document.querySelectorAll('.asset-card').forEach(card => {
-                const img = card.querySelector('.gif-img');
-                
-                card.addEventListener('mouseenter', function() {
-                    if (img && img.src.includes('.gif')) {
-                        const src = img.src;
-                        img.src = '';
-                        setTimeout(() => {
-                            img.src = src;
-                        }, 10);
-                    }
-                });
-            });
-        }
-        
-        // Fungsi untuk mengekspor data asset sebagai JSON
-        function exportAssetData() {
-            const dataStr = JSON.stringify(gameAssets, null, 2);
-            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-            
-            const exportFileDefaultName = 'game-assets-data.json';
-            
-            const linkElement = document.createElement('a');
-            linkElement.setAttribute('href', dataUri);
-            linkElement.setAttribute('download', exportFileDefaultName);
-            linkElement.click();
-        }
-        
-        // Tambahkan tombol ekspor ke halaman
-        const exportBtn = document.createElement('button');
-        exportBtn.textContent = '📥 Ekspor Data Asset';
-        exportBtn.style.cssText = `
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 10px 15px;
-            background: #00cc00;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 100;
-            font-weight: bold;
-        `;
-        exportBtn.addEventListener('click', exportAssetData);
-        document.body.appendChild(exportBtn);
+
+        document.addEventListener('DOMContentLoaded', loadAssets);
     </script>
 </body>
 </html>
