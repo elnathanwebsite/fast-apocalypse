@@ -33,6 +33,7 @@
             margin-bottom: 30px;
             border: 2px solid #00ffff;
             box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            position: relative; /* Untuk positioning tombol start */
         }
         
         h1 {
@@ -346,11 +347,94 @@
             border-radius: 5px;
             font-size: 0.85rem;
         }
+
+        /* ========================================= */
+        /* STYLE KHUSUS START BUTTON & DEVICE CHECK */
+        /* ========================================= */
+        
+        #start-game-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(45deg, #00ff00, #00aa00);
+            color: white;
+            padding: 15px 30px;
+            border: 2px solid #fff;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00ff00;
+            animation: pulse 2s infinite;
+            z-index: 100;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: none; /* Default hidden, JS will show if PC */
+        }
+
+        #start-game-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #00aa00, #00ff00);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 255, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
+        }
+
+        /* Overlay Pemblokir Mobile */
+        #mobile-blocker {
+            display: none; /* Default hidden */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #mobile-blocker h2 {
+            color: #ff5555;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            border: 3px solid #ff5555;
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        #mobile-blocker p {
+            font-size: 1.2rem;
+            color: white;
+            max-width: 600px;
+        }
+
+        #mobile-blocker .icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
+
+    <div id="mobile-blocker">
+        <div class="icon">🚫📱</div>
+        <h2>AKSES DITOLAK</h2>
+        <p>Maaf, <strong>Museum Aset Game</strong> dan gameplay hanya dapat diakses menggunakan <strong>PC / Laptop / Desktop</strong>.</p>
+        <p style="margin-top: 15px; color: #888; font-size: 1rem;">Resolusi layar atau perangkat Anda tidak mendukung.</p>
+    </div>
+
     <div class="container">
         <header>
+            <button id="start-game-btn" onclick="launchGame()">🎮 START GAME (PC)</button>
+
             <h1>MUSEUM ASET GAME</h1>
             <p class="subtitle">SURVIVAL: CAMERA AGGRUPDATE</p>
             <p>Koleksi lengkap semua asset game: GIF, PNG, JPG, dan file audio dengan preview dan informasi detail</p>
@@ -387,75 +471,59 @@
             Total Aset: <span class="asset-count" id="asset-count">0</span> file
         </div>
         
-        <!-- Tab: Semua Aset -->
         <div id="all" class="tab-content active">
             <h2 class="section-title">📁 SEMUA ASET GAME</h2>
             <div class="grid" id="all-assets">
-                <!-- Asset akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: GIF Animasi -->
         <div id="gif" class="tab-content">
             <h2 class="section-title">🎬 GIF ANIMASI</h2>
             <p>File GIF animasi untuk karakter, musuh, dan efek special</p>
             <div class="grid" id="gif-assets">
-                <!-- GIF assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Gambar Statis -->
         <div id="images" class="tab-content">
             <h2 class="section-title">🖼️ GAMBAR STATIS</h2>
             <p>File PNG dan JPG untuk item, UI, background, dan texture</p>
             <div class="grid" id="image-assets">
-                <!-- Image assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Audio -->
         <div id="audio" class="tab-content">
             <h2 class="section-title">🔊 AUDIO & SFX</h2>
             <p>File audio untuk background music dan sound effects</p>
             <div class="grid" id="audio-assets">
-                <!-- Audio assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Karakter -->
         <div id="characters" class="tab-content">
             <h2 class="section-title">👤 KARAKTER UTAMA</h2>
             <p>Asset untuk karakter pemain dan sekutu</p>
             <div class="grid" id="character-assets">
-                <!-- Character assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Musuh -->
         <div id="enemies" class="tab-content">
             <h2 class="section-title">👾 MUSUH & BOSS</h2>
             <p>Asset untuk semua jenis musuh dan bos</p>
             <div class="grid" id="enemy-assets">
-                <!-- Enemy assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Item -->
         <div id="items" class="tab-content">
             <h2 class="section-title">🎒 ITEM & RESOURCE</h2>
             <p>Asset untuk item, resource, dan koleksi</p>
             <div class="grid" id="item-assets">
-                <!-- Item assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
-        <!-- Tab: Struktur -->
         <div id="structures" class="tab-content">
             <h2 class="section-title">🏗️ STRUKTUR & BANGUNAN</h2>
             <p>Asset untuk bangunan, benteng, dan lingkungan</p>
             <div class="grid" id="structure-assets">
-                <!-- Structure assets akan dimuat via JavaScript -->
-            </div>
+                </div>
         </div>
         
         <footer>
@@ -465,7 +533,6 @@
         </footer>
     </div>
 
-    <!-- Template untuk Asset Card -->
     <template id="asset-template">
         <div class="asset-card" data-type="" data-category="">
             <div class="asset-preview">
@@ -496,6 +563,58 @@
     </template>
 
     <script>
+        // ============================================
+        // LOGIKA DETEKSI PERANGKAT (PC vs MOBILE)
+        // ============================================
+        function checkDeviceAndBlock() {
+            // Regex untuk mendeteksi mobile user agents
+            const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            // Cek lebar layar (biasanya mobile < 768px, tablet < 1024px)
+            const isSmallScreen = window.innerWidth < 1024;
+            
+            const startBtn = document.getElementById('start-game-btn');
+            const blocker = document.getElementById('mobile-blocker');
+            const container = document.querySelector('.container');
+
+            if (isMobileUA || isSmallScreen) {
+                // JIKA BUKAN PC:
+                // 1. Tampilkan layar pemblokir
+                blocker.style.display = 'flex';
+                // 2. Sembunyikan konten utama (opsional)
+                container.style.filter = 'blur(10px)';
+                document.body.style.overflow = 'hidden'; // Matikan scroll
+                // 3. Sembunyikan tombol start
+                if(startBtn) startBtn.style.display = 'none';
+                
+                console.log("Akses Ditolak: Perangkat Mobile terdeteksi.");
+            } else {
+                // JIKA PC:
+                // 1. Tampilkan tombol Start Game
+                if(startBtn) startBtn.style.display = 'block';
+                // 2. Sembunyikan blocker
+                blocker.style.display = 'none';
+                
+                console.log("Akses Diterima: PC terdeteksi.");
+            }
+        }
+
+        // Fungsi untuk tombol start (LINK KE GEME35.HTML)
+        function launchGame() {
+            window.location.href = "geme35.html";
+        }
+
+        // Jalankan pengecekan saat halaman dimuat
+        checkDeviceAndBlock();
+        
+        // Cek lagi jika window di-resize (antisipasi inspect element responsive mode)
+        window.addEventListener('resize', checkDeviceAndBlock);
+
+
+        // ============================================
+        // SCRIPT ASET GAME ORIGINAL (TIDAK DIUBAH)
+        // ============================================
+        
         // Data semua asset game dari kode sumber
         const gameAssets = [
             // ========== GIF ANIMASI ==========
