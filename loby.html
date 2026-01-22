@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival Maze Forest - Lobby</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a1929 0%, #0c2b4b 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 2px solid #00a8ff;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            color: #00a8ff;
+            filter: drop-shadow(0 0 10px #00a8ff);
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, #00a8ff, #00ffaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 168, 255, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 30, 60, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #00a8ff;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00a8ff, #0097e6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .user-details .gender {
+            color: #00ffaa;
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        /* Player Stats */
+        .stats-card {
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #00ffaa;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: #00ffaa;
+            font-size: 1.5rem;
+        }
+
+        .card-title i {
+            font-size: 1.8rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(0, 30, 60, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #00a8ff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 168, 255, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ffaa;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Inventory */
+        .inventory {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .inv-item {
+            background: rgba(0, 30, 60, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #ffaa00;
+        }
+
+        .inv-icon {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #ffaa00;
+        }
+
+        .inv-count {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Game Controls */
+        .game-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-card {
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid #ff6b6b;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #00b09b, #96c93d);
+            color: white;
+            border: none;
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 176, 155, 0.4);
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            border: none;
+            padding: 25px;
+            border-radius: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn-continue:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-disabled:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        .stage-info {
+            text-align: center;
+            margin-top: 15px;
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            margin-top: 30px;
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            background: rgba(0, 20, 40, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #9b59b6;
+        }
+
+        .leaderboard-header {
+            background: rgba(155, 89, 182, 0.3);
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 50px 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            font-weight: bold;
+            color: #9b59b6;
+        }
+
+        .leaderboard-row {
+            padding: 15px;
+            display: grid;
+            grid-template-columns: 50px 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.3s;
+        }
+
+        .leaderboard-row:hover {
+            background: rgba(155, 89, 182, 0.1);
+        }
+
+        .rank {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .rank-1 { color: gold; }
+        .rank-2 { color: silver; }
+        .rank-3 { color: #cd7f32; }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .player-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #00a8ff, #0097e6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        /* Recent Saves */
+        .saves-list {
+            margin-top: 20px;
+        }
+
+        .save-item {
+            background: rgba(0, 30, 60, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #3498db;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .save-info h4 {
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+
+        .save-time {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .btn-load {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        /* Daily Reward */
+        .daily-reward {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700, #ff9500);
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #aaa;
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #00a8ff;
+            border-top: 5px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Login Modal */
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: #0a1929;
+            padding: 40px;
+            border-radius: 15px;
+            width: 400px;
+            border: 2px solid #00a8ff;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #00a8ff;
+        }
+
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: #aaa;
+            border-bottom: 3px solid transparent;
+        }
+
+        .login-tab.active {
+            color: #00a8ff;
+            border-bottom: 3px solid #00a8ff;
+            font-weight: bold;
+        }
+
+        .login-form {
+            display: block;
+        }
+
+        .register-form {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #00a8ff;
+            background: #1a2b3c;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00ffaa;
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.3);
+        }
+
+        .btn-login, .btn-register {
+            width: 100%;
+            padding: 12px;
+            background: #00a8ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover, .btn-register:hover {
+            background: #0097e6;
+        }
+
+        .btn-register {
+            background: #00ffaa;
+            color: #333;
+        }
+
+        .btn-register:hover {
+            background: #00e695;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .inventory {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .leaderboard-header,
+            .leaderboard-row {
+                grid-template-columns: 40px 1fr 1fr;
+                font-size: 0.9rem;
+            }
+            
+            .leaderboard-header div:nth-child(4),
+            .leaderboard-header div:nth-child(5),
+            .leaderboard-row div:nth-child(4),
+            .leaderboard-row div:nth-child(5) {
+                display: none;
+            }
+            
+            .login-box {
+                width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div id="loading-text">Loading...</div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <h2 style="text-align: center; color: #00a8ff; margin-bottom: 20px;">SURVIVAL MAZE FOREST</h2>
+            
+            <div class="login-tabs">
+                <div class="login-tab active" id="tabLogin" onclick="showLoginForm()">LOGIN</div>
+                <div class="login-tab" id="tabRegister" onclick="showRegisterForm()">REGISTER</div>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="login-form" id="loginForm">
+                <div class="form-group">
+                    <input type="text" id="loginUsername" placeholder="Username atau Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button class="btn-login" onclick="handleLogin()">LOGIN</button>
+                <div style="text-align: center; margin-top: 15px; color: #aaa;">
+                    Demo: test / 123456
+                </div>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="register-form" id="registerForm">
+                <div class="form-group">
+                    <input type="text" id="regUsername" placeholder="Username" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="regPassword" placeholder="Password (min 6 karakter)" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="regFullName" placeholder="Nama Lengkap (optional)">
+                </div>
+                <div class="form-group">
+                    <select id="regGender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <button class="btn-register" onclick="handleRegister()">DAFTAR</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="logout-btn" onclick="closeLoginModal()" style="background: #666;">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Reward Notification -->
+    <div class="daily-reward" id="dailyReward" onclick="claimDailyReward()">
+        <i class="fas fa-gift" style="font-size: 1.5rem;"></i>
+        <div>
+            <strong>Daily Reward Available!</strong><br>
+            <small>Click to claim</small>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-dungeon"></i>
+                <h1>SURVIVAL MAZE FOREST</h1>
+            </div>
+            <div class="user-info">
+                <div class="avatar" id="userAvatar">?</div>
+                <div class="user-details">
+                    <h3 id="userName">Guest</h3>
+                    <div class="gender" id="userGender">Not logged in</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">LOGOUT</button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Column: Player Stats -->
+            <div class="left-column">
+                <div class="stats-card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>PLAYER STATISTICS</h2>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">CURRENT STAGE</div>
+                            <div class="stat-value" id="currentStage">1</div>
+                            <div class="stat-label">Highest: <span id="highestStage">1</span></div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">TOTAL KILLS</div>
+                            <div class="stat-value" id="totalKills">0</div>
+                            <div class="stat-label">Zombies Eliminated</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">PLAY TIME</div>
+                            <div class="stat-value" id="playTime">0</div>
+                            <div class="stat-label">Minutes</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">WALLS BUILT</div>
+                            <div class="stat-value" id="wallsBuilt">0</div>
+                            <div class="stat-label">Fortifications</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">COINS COLLECTED</div>
+                            <div class="stat-value" id="totalCoins">0</div>
+                            <div class="stat-label">Total Wealth</div>
+                        </div>
+                        
+                        <div class="stat-item">
+                            <div class="stat-label">QUEST COMPLETED</div>
+                            <div class="stat-value" id="questsCompleted">0</div>
+                            <div class="stat-label">Side Missions</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-title" style="margin-top: 30px;">
+                        <i class="fas fa-backpack"></i>
+                        <h2>CURRENT INVENTORY</h2>
+                    </div>
+                    
+                    <div class="inventory">
+                        <div class="inv-item">
+                            <div class="inv-icon">🔫</div>
+                            <div class="inv-count" id="invAmmo">60</div>
+                            <div class="stat-label">Ammo</div>
+                        </div>
+                        <div class="inv-item">
+                            <div class="inv-icon">🪵</div>
+                            <div class="inv-count" id="invWood">20</div>
+                            <div class="stat-label">Wood</div>
+                        </div>
+                        <div class="inv-item">
+                            <div class="inv-icon">🔩</div>
+                            <div class="inv-count" id="invIron">10</div>
+                            <div class="stat-label">Iron</div>
+                        </div>
+                        <div class="inv-item">
+                            <div class="inv-icon">🪙</div>
+                            <div class="inv-count" id="invCoin">0</div>
+                            <div class="stat-label">Coins</div>
+                        </div>
+                        <div class="inv-item">
+                            <div class="inv-icon">💣</div>
+                            <div class="inv-count" id="invBomb">1</div>
+                            <div class="stat-label">Bombs</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Game Controls -->
+            <div class="right-column">
+                <div class="control-card">
+                    <div class="card-title">
+                        <i class="fas fa-play-circle"></i>
+                        <h2>GAME CONTROLS</h2>
+                    </div>
+                    
+                    <button class="btn-start" id="btnStartStage1" onclick="startNewGame()">
+                        <i class="fas fa-play"></i>
+                        START STAGE 1
+                    </button>
+                    
+                    <button class="btn-continue" id="btnContinue" onclick="continueGame()">
+                        <i class="fas fa-forward"></i>
+                        CONTINUE STAGE <span id="continueStage">1</span>
+                    </button>
+                    
+                    <div class="stage-info" id="saveInfo">
+                        Last Save: <span id="lastSaveTime">Never</span>
+                    </div>
+                </div>
+                
+                <!-- Recent Saves -->
+                <div class="stats-card" style="margin-top: 20px;">
+                    <div class="card-title">
+                        <i class="fas fa-save"></i>
+                        <h2>RECENT SAVES</h2>
+                    </div>
+                    
+                    <div class="saves-list" id="savesList">
+                        <div style="text-align: center; color: #aaa; padding: 20px;">
+                            No saved games found
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="leaderboard">
+            <div class="stats-card">
+                <div class="card-title">
+                    <i class="fas fa-trophy"></i>
+                    <h2>LEADERBOARD TOP 10</h2>
+                </div>
+                
+                <div class="leaderboard-table">
+                    <div class="leaderboard-header">
+                        <div>RANK</div>
+                        <div>PLAYER</div>
+                        <div>STAGE</div>
+                        <div>KILLS</div>
+                        <div>SCORE</div>
+                    </div>
+                    
+                    <div id="leaderboardContent">
+                        <!-- Leaderboard will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Survival Maze Forest v2.0 | Made with ❤️ for Gaming Community</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                <i class="fas fa-cog" style="margin-right: 5px; cursor: pointer;" onclick="showSettings()"></i>
+                <i class="fas fa-question-circle" style="margin: 0 10px; cursor: pointer;" onclick="showHelp()"></i>
+                <i class="fas fa-redo" style="margin-left: 5px; cursor: pointer;" onclick="refreshData()"></i>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // API CONFIGURATION
+        // ============================================
+        const API_URL = window.location.origin.includes('localhost') 
+            ? 'http://localhost/survival-maze/api.php' 
+            : 'api.php'; // Adjust based on your server setup
+        
+        let currentUser = null;
+        let authToken = null;
+
+        // ============================================
+        // API SERVICE
+        // ============================================
+        class ApiService {
+            static async request(action, method = 'GET', data = null) {
+                const url = `${API_URL}?action=${action}`;
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+
+                // Add authorization token if available
+                if (authToken) {
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+
+                const options = {
+                    method,
+                    headers
+                };
+
+                if (data && method !== 'GET') {
+                    options.body = JSON.stringify(data);
+                }
+
+                try {
+                    showLoading(`Loading ${action}...`);
+                    
+                    const response = await fetch(url, options);
+                    
+                    // Check for empty response
+                    const responseText = await response.text();
+                    if (!responseText) {
+                        throw new Error('Empty response from server');
+                    }
+                    
+                    const result = JSON.parse(responseText);
+                    
+                    hideLoading();
+                    
+                    if (result.status === 'error') {
+                        // Handle token expiration
+                        if (response.status === 401) {
+                            logout();
+                            showLoginModal();
+                            return null;
+                        }
+                        
+                        // Show error message
+                        showMessage(result.message, 'error');
+                        return null;
+                    }
+                    
+                    return result;
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('API Error:', error);
+                    
+                    // Show user-friendly error message
+                    let message = 'Network error. Please check your connection.';
+                    if (error.message.includes('Empty response')) {
+                        message = 'Server returned empty response. Please try again.';
+                    } else if (error.message.includes('JSON')) {
+                        message = 'Invalid response from server.';
+                    }
+                    
+                    showMessage(message, 'error');
+                    return null;
+                }
+            }
+
+            // Auth endpoints
+            static async login(username, password) {
+                return await this.request('login', 'POST', { username, password });
+            }
+
+            static async register(userData) {
+                return await this.request('register', 'POST', userData);
+            }
+
+            // User endpoints
+            static async getProfile() {
+                return await this.request('profile', 'GET');
+            }
+
+            static async updateProfile(data) {
+                return await this.request('profile', 'PUT', data);
+            }
+
+            // Game endpoints
+            static async saveGame(saveData) {
+                return await this.request('save', 'POST', saveData);
+            }
+
+            static async loadGame(stage = null) {
+                const params = stage ? `&stage=${stage}` : '';
+                return await this.request('load', 'GET');
+            }
+
+            static async getStats() {
+                return await this.request('stats', 'GET');
+            }
+
+            static async updateStats(statsType, value = 1) {
+                return await this.request('stats', 'POST', { stats_type: statsType, value });
+            }
+
+            // Inventory endpoints
+            static async updateInventory(items) {
+                return await this.request('inventory', 'POST', { items });
+            }
+
+            // Shop endpoints
+            static async purchaseItem(item, cost) {
+                return await this.request('shop', 'POST', { item, cost });
+            }
+
+            // Daily rewards
+            static async claimDailyReward() {
+                return await this.request('daily', 'POST');
+            }
+
+            // Leaderboard
+            static async getLeaderboard(limit = 10) {
+                return await this.request(`leaderboard&limit=${limit}`, 'GET');
+            }
+
+            // System
+            static async healthCheck() {
+                return await this.request('health', 'GET');
+            }
+        }
+
+        // ============================================
+        // UI FUNCTIONS
+        // ============================================
+        function showLoading(text = 'Loading...') {
+            document.getElementById('loading-text').textContent = text;
+            document.getElementById('loading').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showMessage(message, type = 'info') {
+            // Create message element
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                border-radius: 5px;
+                color: white;
+                font-weight: bold;
+                z-index: 3000;
+                min-width: 300px;
+                max-width: 500px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            if (type === 'success') {
+                messageEl.style.background = 'linear-gradient(135deg, #00b09b, #96c93d)';
+            } else if (type === 'error') {
+                messageEl.style.background = 'linear-gradient(135deg, #ff416c, #ff4b2b)';
+            } else {
+                messageEl.style.background = 'linear-gradient(135deg, #00a8ff, #0097e6)';
+            }
+            
+            messageEl.textContent = message;
+            
+            document.body.appendChild(messageEl);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                messageEl.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (document.body.contains(messageEl)) {
+                        document.body.removeChild(messageEl);
+                    }
+                }, 300);
+            }, 5000);
+            
+            // Add CSS for animations
+            if (!document.querySelector('#message-styles')) {
+                const style = document.createElement('style');
+                style.id = 'message-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').style.display = 'flex';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabRegister').classList.remove('active');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('tabRegister').classList.add('active');
+        }
+
+        // ============================================
+        // AUTH HANDLERS
+        // ============================================
+        async function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!username || !password) {
+                showMessage('Please enter username and password', 'error');
+                return;
+            }
+            
+            const result = await ApiService.login(username, password);
+            
+            if (result && result.status === 'success') {
+                // Save token and user data
+                authToken = result.data.token;
+                currentUser = result.data.user;
+                
+                localStorage.setItem('auth_token', authToken);
+                localStorage.setItem('user_data', JSON.stringify(currentUser));
+                localStorage.setItem('user_stats', JSON.stringify(result.data.stats));
+                localStorage.setItem('user_inventory', JSON.stringify(result.data.inventory));
+                
+                // Close modal and load data
+                closeLoginModal();
+                showMainContent();
+                loadUserData();
+                loadLeaderboard();
+                checkDailyReward();
+                
+                showMessage('Login successful!', 'success');
+            }
+        }
+
+        async function handleRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const fullName = document.getElementById('regFullName').value.trim() || username;
+            const gender = document.getElementById('regGender').value;
+            
+            if (!username || !email || !password) {
+                showMessage('Please fill all required fields', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showMessage('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            const userData = {
+                username,
+                email,
+                password,
+                full_name: fullName,
+                gender
+            };
+            
+            const result = await ApiService.register(userData);
+            
+            if (result && result.status === 'success') {
+                // Auto login after registration
+                authToken = result.data.token;
+                currentUser = result.data.user;
+                
+                localStorage.setItem('auth_token', authToken);
+                localStorage.setItem('user_data', JSON.stringify(currentUser));
+                
+                showMessage('Registration successful!', 'success');
+                showLoginForm(); // Switch back to login form
+                
+                // You can auto-login here if you want
+                // handleLogin(); // Uncomment to auto-login
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                // Clear all storage
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Reset variables
+                authToken = null;
+                currentUser = null;
+                
+                // Show login modal
+                showLoginModal();
+                hideMainContent();
+                
+                showMessage('Logged out successfully', 'info');
+            }
+        }
+
+        // ============================================
+        // GAME HANDLERS
+        // ============================================
+        async function startNewGame() {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            // Start from stage 1
+            window.location.href = `game.html?stage=1&new=true&token=${authToken}`;
+        }
+
+        async function continueGame() {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            if (!currentUser.current_stage || currentUser.current_stage <= 1) {
+                showMessage('No saved game found! Start a new game first.', 'error');
+                return;
+            }
+            
+            // Load current stage
+            window.location.href = `game.html?stage=${currentUser.current_stage}&continue=true&token=${authToken}`;
+        }
+
+        async function loadGameSave(stage) {
+            if (!currentUser) {
+                showLoginModal();
+                return;
+            }
+            
+            window.location.href = `game.html?stage=${stage}&load=true&token=${authToken}`;
+        }
+
+        // ============================================
+        // DATA LOADING
+        // ============================================
+        function showMainContent() {
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        function hideMainContent() {
+            document.getElementById('mainContent').style.display = 'none';
+        }
+
+        async function loadUserData() {
+            if (!authToken) return;
+            
+            const result = await ApiService.getProfile();
+            
+            if (result && result.status === 'success') {
+                currentUser = result.data;
+                
+                // Update UI with user data
+                updateUserUI();
+            }
+        }
+
+        function updateUserUI() {
+            if (!currentUser) return;
+            
+            // User info
+            document.getElementById('userName').textContent = currentUser.full_name || currentUser.username;
+            document.getElementById('userGender').textContent = currentUser.gender;
+            document.getElementById('userAvatar').textContent = currentUser.username.charAt(0).toUpperCase();
+            
+            // Stats
+            document.getElementById('currentStage').textContent = currentUser.current_stage || 1;
+            document.getElementById('highestStage').textContent = currentUser.highest_stage || 1;
+            document.getElementById('totalKills').textContent = currentUser.total_kills || 0;
+            document.getElementById('playTime').textContent = Math.floor((currentUser.total_play_time || 0) / 60);
+            document.getElementById('wallsBuilt').textContent = currentUser.total_walls_built || 0;
+            document.getElementById('totalCoins').textContent = currentUser.total_coin_collected || 0;
+            document.getElementById('questsCompleted').textContent = currentUser.total_quests_completed || 0;
+            
+            // Inventory
+            document.getElementById('invAmmo').textContent = currentUser.ammo || 60;
+            document.getElementById('invWood').textContent = currentUser.wood || 20;
+            document.getElementById('invIron').textContent = currentUser.iron || 10;
+            document.getElementById('invCoin').textContent = currentUser.coin || 0;
+            document.getElementById('invBomb').textContent = currentUser.bomb || 1;
+            
+            // Continue button
+            document.getElementById('continueStage').textContent = currentUser.current_stage || 1;
+            
+            // Enable/disable continue button
+            const continueBtn = document.getElementById('btnContinue');
+            if (currentUser.current_stage > 1) {
+                continueBtn.classList.remove('btn-disabled');
+            } else {
+                continueBtn.classList.add('btn-disabled');
+            }
+            
+            // Last save time
+            if (currentUser.last_login) {
+                const lastSave = new Date(currentUser.last_login);
+                document.getElementById('lastSaveTime').textContent = formatTimeAgo(lastSave);
+            }
+        }
+
+        async function loadLeaderboard() {
+            const result = await ApiService.getLeaderboard(10);
+            
+            if (result && result.status === 'success') {
+                updateLeaderboardUI(result.data.leaderboard);
+            }
+        }
+
+        function updateLeaderboardUI(leaderboard) {
+            const container = document.getElementById('leaderboardContent');
+            container.innerHTML = '';
+            
+            if (!leaderboard || leaderboard.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: #aaa;">No leaderboard data available</div>';
+                return;
+            }
+            
+            leaderboard.forEach((player, index) => {
+                const row = document.createElement('div');
+                row.className = 'leaderboard-row';
+                
+                // Determine rank color
+                let rankClass = '';
+                const rank = player.rank || (index + 1);
+                if (rank === 1) rankClass = 'rank-1';
+                else if (rank === 2) rankClass = 'rank-2';
+                else if (rank === 3) rankClass = 'rank-3';
+                
+                row.innerHTML = `
+                    <div class="rank ${rankClass}">#${rank}</div>
+                    <div class="player-info">
+                        <div class="player-avatar" style="background: ${player.gender === 'Male' ? 'linear-gradient(45deg, #00a8ff, #0097e6)' : 'linear-gradient(45deg, #ff6b9d, #ff4757)'}">
+                            ${player.username.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <div style="font-weight: bold;">${player.full_name || player.username}</div>
+                            <div style="font-size: 0.8rem; color: #aaa;">@${player.username}</div>
+                        </div>
+                    </div>
+                    <div>${player.stage_reached || 1}</div>
+                    <div>${player.total_kills || 0}</div>
+                    <div>${(player.total_score || 0).toLocaleString()}</div>
+                `;
+                
+                container.appendChild(row);
+            });
+        }
+
+        async function loadSaveGames() {
+            // This would require a new endpoint for getting saves
+            // For now, we'll use the load endpoint
+            try {
+                const result = await ApiService.loadGame();
+                
+                if (result && result.status === 'success') {
+                    updateSavesUI([result.data]);
+                }
+            } catch (error) {
+                console.error('Failed to load saves:', error);
+            }
+        }
+
+        function updateSavesUI(saves) {
+            const container = document.getElementById('savesList');
+            
+            if (!saves || saves.length === 0) {
+                container.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">No saved games found</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            saves.forEach(save => {
+                const saveItem = document.createElement('div');
+                saveItem.className = 'save-item';
+                
+                const saveDate = save.save_timestamp ? new Date(save.save_timestamp) : new Date();
+                const timeAgo = formatTimeAgo(saveDate);
+                
+                saveItem.innerHTML = `
+                    <div class="save-info">
+                        <h4>${save.save_name || 'Auto Save'}</h4>
+                        <div class="save-time">Stage ${save.stage_number || 1} • ${timeAgo}</div>
+                    </div>
+                    <button class="btn-load" onclick="loadGameSave(${save.stage_number || 1})">
+                        Load
+                    </button>
+                `;
+                
+                container.appendChild(saveItem);
+            });
+        }
+
+        async function checkDailyReward() {
+            // Check if user hasn't claimed today's reward
+            const lastClaim = localStorage.getItem('last_daily_claim');
+            const today = new Date().toDateString();
+            
+            if (lastClaim !== today) {
+                document.getElementById('dailyReward').style.display = 'flex';
+            } else {
+                document.getElementById('dailyReward').style.display = 'none';
+            }
+        }
+
+        async function claimDailyReward() {
+            if (!authToken) {
+                showLoginModal();
+                return;
+            }
+            
+            const result = await ApiService.claimDailyReward();
+            
+            if (result && result.status === 'success') {
+                showMessage(`Daily reward claimed! You received: ${result.data.reward.amount} ${result.data.reward.type}`, 'success');
+                
+                // Hide daily reward notification
+                document.getElementById('dailyReward').style.display = 'none';
+                
+                // Update last claim date
+                localStorage.setItem('last_daily_claim', new Date().toDateString());
+                
+                // Refresh user data
+                loadUserData();
+            }
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function formatTimeAgo(date) {
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+            
+            if (diffMins < 1) return 'just now';
+            if (diffMins < 60) return `${diffMins} minutes ago`;
+            if (diffHours < 24) return `${diffHours} hours ago`;
+            if (diffDays < 7) return `${diffDays} days ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function showSettings() {
+            showMessage('Settings feature coming soon!', 'info');
+        }
+
+        function showHelp() {
+            const helpText = `
+                SURVIVAL MAZE FOREST - HELP
+                
+                1. COLLECT KEYS to unlock doors
+                2. BUILD FORTRESSES for defense
+                3. COMPLETE SIDE QUESTS for rewards
+                4. WATCH OUT for radiation zones
+                5. USE BOMBS strategically
+                6. UPGRADE YOUR WEAPON regularly
+                7. RESCUE PARTNERS for help
+                8. CLAIM DAILY REWARDS for bonuses
+            `;
+            alert(helpText);
+        }
+
+        function refreshData() {
+            if (authToken) {
+                loadUserData();
+                loadLeaderboard();
+                showMessage('Data refreshed!', 'success');
+            } else {
+                showMessage('Please login first', 'error');
+                showLoginModal();
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is logged in
+            authToken = localStorage.getItem('auth_token');
+            const savedUser = localStorage.getItem('user_data');
+            
+            if (authToken && savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    showMainContent();
+                    loadUserData();
+                    loadLeaderboard();
+                    checkDailyReward();
+                    
+                    // Test API connection
+                    const health = await ApiService.healthCheck();
+                    if (!health) {
+                        showMessage('Cannot connect to server. Please check your connection.', 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    showLoginModal();
+                }
+            } else {
+                showLoginModal();
+            }
+            
+            // Add CSS for messages if not already added
+            if (!document.querySelector('#message-styles')) {
+                const style = document.createElement('style');
+                style.id = 'message-styles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        });
+
+        // Auto-refresh leaderboard every 30 seconds
+        setInterval(() => {
+            if (authToken) {
+                loadLeaderboard();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
